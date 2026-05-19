@@ -16,7 +16,8 @@ spec:
       containers:
       - name: restoran
         # FIX: Updated to use the valid Artifact Registry image path and tag
-        image: europe-west1-docker.pkg.dev/restoran-deploy-ci/restoran/restoran:753e7e8addd1354cdcd08071ed1bf8303425a6dd
+        image: europe-west1-docker.pkg.dev/restoran-deploy-ci/restoran/restoran:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         env:
