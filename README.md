@@ -3,7 +3,7 @@ Kubernetes ve CI/CD Final Projesi
 Bartın Üniversitesi
 Bilgisayar Mühendisliği Bölümü
 Bulut Bilişim Dersi Final Projesi
-Ad Soyad: Kerem Öfluoğlu
+Ad Soyad: Kerem Ofluoğlu, Metehan Güçlü
 
 Proje Hakkında
 Bu projede Flask tabanlı bir restoran rezervasyon web sitesi Docker container yapısına dönüştürülmüş ve Google Kubernetes Engine (GKE) ortamında çalıştırılmıştır. Proje kapsamında uygulama yüksek erişilebilirlik, ölçeklenebilirlik ve sürdürülebilir dağıtım mantığıyla yapılandırılmıştır.
