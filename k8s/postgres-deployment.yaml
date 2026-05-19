@@ -4,7 +4,7 @@ metadata:
   name: postgres-deployment
   namespace: default
 spec:
-  replicas: 1         
+  replicas: 1
   selector:
     matchLabels:
       app: postgres
@@ -14,33 +14,36 @@ spec:
         app: postgres
     spec:
       containers:
-        - name: postgres
-          image: postgres:16
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: restoran-secret
-                  key: db-name
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: restoran-secret
-                  key: db-user
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: restoran-secret
-                  key: db-password
-          volumeMounts:
-            - name: postgres-data
-              mountPath: /var/lib/postgresql/data   
-      volumes:
+      - name: postgres
+        image: postgres:16
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: restoran-secret
+              key: db-name
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: restoran-secret
+              key: db-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: restoran-secret
+              key: db-password
+        # FIX: Directs Postgres to store data in a subdirectory
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - containerPort: 5432
+        volumeMounts:
         - name: postgres-data
-          persistentVolumeClaim:
-            claimName: restoran-volume             
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: restoran-volume  
 ---
 apiVersion: v1
 kind: Service
