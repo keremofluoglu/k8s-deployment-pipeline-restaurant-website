@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Girişi — Ember & Oak</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --cream: #f5f0e8; --dark: #1a1510; --gold: #c9a84c; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--dark); color: var(--cream);
+            font-family: 'Montserrat', sans-serif; font-weight: 300;
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+        }
+        .box {
+            width: 100%; max-width: 380px; padding: 3rem 2.5rem;
+            border: 1px solid rgba(201,168,76,0.2);
+        }
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem; color: var(--gold); letter-spacing: 0.15em;
+            display: block; text-align: center; margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            text-align: center; font-size: 0.65rem; letter-spacing: 0.35em;
+            text-transform: uppercase; opacity: 0.4; margin-bottom: 2.5rem;
+        }
+        label {
+            display: block; font-size: 0.65rem; letter-spacing: 0.25em;
+            text-transform: uppercase; opacity: 0.6; margin-bottom: 0.5rem;
+        }
+        input {
+            width: 100%; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(201,168,76,0.2); color: var(--cream);
+            padding: 0.75rem 1rem; font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem; font-weight: 300; margin-bottom: 1.5rem;
+            outline: none;
+        }
+        input:focus { border-color: rgba(201,168,76,0.6); }
+        button {
+            width: 100%; background: transparent;
+            border: 1px solid var(--gold); color: var(--gold);
+            padding: 0.85rem; font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s;
+        }
+        button:hover { background: var(--gold); color: var(--dark); }
+        .error {
+            background: rgba(180,50,50,0.15);
+            border: 1px solid rgba(180,50,50,0.3);
+            padding: 0.75rem 1rem; margin-bottom: 1.5rem;
+            font-size: 0.78rem; color: #e88; text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <span class="logo">Ember & Oak</span>
+        <p class="subtitle">Yönetim Paneli</p>
+
+        {% if hata %}
+        <div class="error">{{ hata }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <label for="username">Kullanıcı Adı</label>
+            <input type="text" id="username" name="username" autocomplete="username" required>
+
+            <label for="password">Şifre</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+
+            <button type="submit">Giriş Yap</button>
+        </form>
+    </div>
+</body>
+</html>

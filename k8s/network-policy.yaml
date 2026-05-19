@@ -53,7 +53,6 @@ spec:
  
   policyTypes:
     - Ingress
-    - Egress
      
   ingress:
     - from:
@@ -63,7 +62,6 @@ spec:
       ports:
         - port: 5432
           protocol: TCP
-  egress: []
 ---
 # diger 2 kural disindaki her erisimi engelle
 apiVersion: networking.k8s.io/v1

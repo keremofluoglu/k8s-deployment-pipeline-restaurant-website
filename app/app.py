@@ -1,9 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, abort
 import psycopg2
 import os
 from datetime import datetime
+from functools import wraps
 
 app = Flask(__name__)
+
+# SECRET_KEY session'ları imzalamak için şart. Env'den alınıyor.
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-degistir")
+
+# Admin kullanıcı adı ve şifresi env'den geliyor
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "changeme")
 
 def get_db():
     return psycopg2.connect(
@@ -35,6 +43,35 @@ def init_db():
     except Exception as e:
         print(f"DB init error: {e}")
 
+# --- Auth decorator ---
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated
+
+# --- Login / Logout ---
+@app.route("/admin/login", methods=["GET", "POST"])
+def login():
+    hata = None
+    if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session["logged_in"] = True
+            return redirect(url_for("admin"))
+        else:
+            hata = "Kullanıcı adı veya şifre hatalı."
+    return render_template("login.html", hata=hata)
+
+@app.route("/admin/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+# --- Ana rotalar ---
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -69,6 +106,7 @@ def basarili():
     return render_template("basarili.html")
 
 @app.route("/admin")
+@login_required
 def admin():
     try:
         conn = get_db()
@@ -85,11 +123,9 @@ def admin():
 def health():
     return {"status": "ok"}, 200
 
-
-# Uygulama başlarken tabloyu oluştur
 with app.app_context():
     init_db()
-    
+
 if __name__ == "__main__":
     init_db()
     app.run(host="0.0.0.0", port=5000, debug=False)

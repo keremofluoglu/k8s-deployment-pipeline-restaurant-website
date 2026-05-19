@@ -40,6 +40,21 @@ spec:
             secretKeyRef:
               name: restoran-secret
               key: db-password
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: restoran-secret
+              key: secret-key
+        - name: ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: restoran-secret
+              key: admin-username
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: restoran-secret
+              key: admin-password
 ---
 apiVersion: v1
 kind: Service
@@ -53,4 +68,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 5000    
-  type: ClusterIP         
+  type: ClusterIP
