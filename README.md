@@ -11,16 +11,16 @@ Sistem; Kubernetes üzerinde Deployment, Service, Ingress, Persistent Volume Cla
 Proje boyunca amaç; klasik bir web uygulamasını modern bulut teknolojileri kullanarak container tabanlı bir mimariye taşımak ve otomatik dağıtım süreçlerini uygulamalı olarak gerçekleştirmektir.
 
 Kullanılan Teknolojiler
-•	Docker
-•	Kubernetes (GKE — Google Kubernetes Engine)
-•	GitHub Actions (CI/CD)
-•	GCP Artifact Registry (europe-west1)
-•	GCP Workload Identity Federation
-•	Python / Flask
-•	PostgreSQL 16
-•	psycopg2
-•	Kubernetes Ingress (nginx)
-•	Ubuntu Linux
+  • Docker
+  • Kubernetes (GKE — Google Kubernetes Engine)
+  •	GitHub Actions (CI/CD)
+  •	GCP Artifact Registry (europe-west1)
+  •	GCP Workload Identity Federation
+  •	Python / Flask
+  •	PostgreSQL 16
+  •	psycopg2
+  •	Kubernetes Ingress (nginx)
+  •	Ubuntu Linux
 
 Uygulama Mimarisi
 Projede temel olarak iki ana container bulunmaktadır:
