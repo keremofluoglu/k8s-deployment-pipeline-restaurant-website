@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: restoran-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: restoran-service
+                port:
+                  number: 80
+
+# NOT — domain yoksa böyle bırakabilirsin.
+# Cluster'ın dış IP'si ile direkt erişilir:
+#   kubectl get ingress → ADDRESS sütunundaki IP
+#
+# Domain bağlamak istersen rules altına host ekle:
+#   - host: siteadin.com
+#     http: ...

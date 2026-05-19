@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: default
+spec:
+  replicas: 1           # Veritabanı her zaman 1 replica olur
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: restoran-secret
+                  key: db-name
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: restoran-secret
+                  key: db-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: restoran-secret
+                  key: db-password
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data   # PVC buraya bağlanır
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: restoran-volume              # pvc.yaml ile aynı isim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service    # app.py'deki DB_HOST değeriyle birebir aynı olmalı
+  namespace: default
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP           # Dışarıya kapalı, sadece cluster içinden erişilir
