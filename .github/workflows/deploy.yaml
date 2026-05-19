@@ -1,0 +1,43 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write        
+
+    env:
+      IMAGE: europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/restoran/restoran
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+
+      - uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: restoran-cluster
+          location: europe-west1-b
+
+      - name: Build ve push
+        run: |
+          docker build -t $IMAGE:${{ github.sha }} ./app
+          docker push $IMAGE:${{ github.sha }}
+      - name: Deploy
+        run: |
+          kubectl apply -f k8s/secret.yaml
+          kubectl apply -f k8s/pvc.yaml
+          kubectl apply -f k8s/postgres-deployment.yaml
+          kubectl apply -f k8s/network-policy.yaml
+          sed -i "s|\$IMAGE_TAG|${{ github.sha }}|g" k8s/restoran-deployment.yaml
+          kubectl apply -f k8s/restoran-deployment.yaml
+          kubectl apply -f k8s/ingress.yaml
