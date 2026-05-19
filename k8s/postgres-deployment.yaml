@@ -4,7 +4,7 @@ metadata:
   name: postgres-deployment
   namespace: default
 spec:
-  replicas: 1           # Veritabanı her zaman 1 replica olur
+  replicas: 1         
   selector:
     matchLabels:
       app: postgres
@@ -36,16 +36,16 @@ spec:
                   key: db-password
           volumeMounts:
             - name: postgres-data
-              mountPath: /var/lib/postgresql/data   # PVC buraya bağlanır
+              mountPath: /var/lib/postgresql/data   
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: restoran-volume              # pvc.yaml ile aynı isim
+            claimName: restoran-volume             
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-service    # app.py'deki DB_HOST değeriyle birebir aynı olmalı
+  name: postgres-service    
   namespace: default
 spec:
   selector:
@@ -54,4 +54,4 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-  type: ClusterIP           # Dışarıya kapalı, sadece cluster içinden erişilir
+  type: ClusterIP           

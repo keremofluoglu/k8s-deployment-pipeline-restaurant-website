@@ -1,0 +1,76 @@
+# postgress icin 5432 ye izin veriyo ve disardan 53 portuna izin var
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: flask-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: restoran
+ 
+  policyTypes:
+    - Ingress
+    - Egress
+ 
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx   
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx        
+      ports:
+        - port: 5000
+          protocol: TCP
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+      ports:
+        - port: 5432
+          protocol: TCP
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+---
+# postgresqlin kurali egress tanimli degil
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres     
+ 
+  policyTypes:
+    - Ingress
+     
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: restoran
+      ports:
+        - port: 5432
+          protocol: TCP
+---
+# diger 2 kural disindaki her erisimi engelle
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: default
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress

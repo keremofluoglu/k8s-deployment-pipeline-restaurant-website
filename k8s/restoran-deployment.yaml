@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: restoran-deployment   # "deploymet" yazım hatası düzeltildi
+  name: restoran-deployment   
   namespace: default
 spec:
-  replicas: 1                 # 3'ten 1'e düşürüldü — açıklama aşağıda
+  replicas: 3                
   selector:
     matchLabels:
       app: restoran
@@ -17,9 +17,8 @@ spec:
         - name: restoran
           image: restoran:v1
           ports:
-            - containerPort: 5000   # app.py port 5000'de çalışıyor, 8080 değil
+            - containerPort: 5000   
           env:
-            # Secret'taki değerleri env variable olarak pod'a aktar
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
@@ -52,11 +51,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 5000    # containerPort ile eşleşiyor
-  type: ClusterIP         # Ingress üzerinden erişilecek, LoadBalancer gerekmez
-
-# NOT — replicas neden 1?
-# PostgreSQL 1 pod, PVC ReadWriteOnce modunda.
-# 3 Flask pod aynı anda aynı DB'ye yazabilir (bu sorun değil),
-# ama başlangıç için 1 daha basit ve hatasız çalışır.
-# İleride artırmak istersen replicas: 3 yapabilirsin.
+      targetPort: 5000    
+  type: ClusterIP         
