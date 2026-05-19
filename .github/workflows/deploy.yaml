@@ -44,5 +44,3 @@ jobs:
           kubectl apply -f k8s/ingress.yaml
           
           kubectl set image deployment/restoran-deployment restoran=$IMAGE:${{ github.sha }}
-
-
