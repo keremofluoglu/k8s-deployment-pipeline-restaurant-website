@@ -34,13 +34,15 @@ jobs:
           docker push $IMAGE:${{ github.sha }}
       - name: Deploy
         run: |
+          sed -i "s|\$IMAGE_TAG|${{ github.sha }}|g" k8s/restoran-deployment.yaml
+
           kubectl apply -f k8s/secret.yaml
           kubectl apply -f k8s/pvc.yaml
           kubectl apply -f k8s/postgres-deployment.yaml
           kubectl apply -f k8s/network-policy.yaml
-          sed -i "s|\$IMAGE_TAG|${{ github.sha }}|g" k8s/restoran-deployment.yaml
           kubectl apply -f k8s/restoran-deployment.yaml
           kubectl apply -f k8s/ingress.yaml
+          
           kubectl set image deployment/restoran-deployment restoran=$IMAGE:${{ github.sha }}
 
 
